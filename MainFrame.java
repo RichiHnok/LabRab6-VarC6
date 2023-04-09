@@ -33,22 +33,32 @@ public class MainFrame extends JFrame{
 
         this.addKeyListener(new KeyAdapter(){
             public void keyPressed(KeyEvent e){
-                
+                field.takeKeyEvent(e);
+            }
+
+            public void keyReleased(KeyEvent e){
+                field.takeKeyEvent(e);
             }
         });
 
         setSize(WIDTH, HEIGHT);
         
+        
         Toolkit kit = Toolkit.getDefaultToolkit();
+
+        // field.addRacket();
+
+
         // Отцентрировать окно приложения на экране
         setLocation((kit.getScreenSize().width - WIDTH)/2, 
         (kit.getScreenSize().height - HEIGHT)/2);
         // Установить начальное состояние окна развѐрнутым на весь экран
         setExtendedState(MAXIMIZED_BOTH);
         // Создать меню
+        
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
-
+        
         JMenu ballMenu = new JMenu("Мячи");
         Action addBallAction = new AbstractAction("Добавить мяч") {
             public void actionPerformed(ActionEvent event) {
@@ -62,7 +72,8 @@ public class MainFrame extends JFrame{
         };
         menuBar.add(ballMenu);
         ballMenu.add(addBallAction);
-
+        
+        
         JMenu racketMenu = new JMenu("Ракетка");
         Action addRacketAction = new AbstractAction("Добавить ракетку"){
             public void actionPerformed(ActionEvent event){
@@ -71,12 +82,7 @@ public class MainFrame extends JFrame{
         };
         menuBar.add(racketMenu);
         racketMenu.add(addRacketAction);
-        setFocusable(true);
-        getContentPane().addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                System.out.println(e.getKeyCode());    
-            }
-        });
+        
         
         JMenu controlMenu = new JMenu("Управление");
         menuBar.add(controlMenu);
@@ -100,6 +106,7 @@ public class MainFrame extends JFrame{
         resumeMenuItem.setEnabled(false);
         // Добавить в центр граничной компоновки поле Field
         getContentPane().add(field, BorderLayout.CENTER);
+
     }
     
 }

@@ -21,9 +21,14 @@ public class Racket implements Runnable {
     private int height;
     private int width;
     private Color color;
+
+    private boolean moovingUp;
+    private boolean moovingDown;
     // Текущие координаты мяча
     private double x;
     private double y;
+
+    private double speed = 5;
 
     private int keyCodeUp;
     private int keyCodeDown;
@@ -38,8 +43,9 @@ public class Racket implements Runnable {
         width = 10;
 
         color = new Color((float)Math.random(), (float)Math.random(), (float)Math.random());
-        this.x = x;
-        this.y = y;
+        this.x = x+width;
+        // System.out.println(field.getSize().getHeight());
+        this.y = y+height;
         Thread thisThread = new Thread(this);
         thisThread.start();
     }
@@ -48,44 +54,42 @@ public class Racket implements Runnable {
     // то завершается и поток
     public void run() {
         try {
-            // Крутим бесконечный цикл, т.е. пока нас не прервут, 
-            // мы не намерены завершаться
-            // while(true) {
-            //     // Синхронизация потоков на самом объекте поля
-            //     // Если движение разрешено - управление будет 
-            //     // возвращено в метод
-            //     // В противном случае - активный поток заснѐт
-            //     field.canMove(this);
+            while(true) {
+                field.canMove(this);
+
+                if(y >= field.getHeight()){
+                    
+                }else if(moovingUp){
+                    y += speed;
+                }
+
+                if(y <= height){
+                    
+                }else if(moovingDown){
+                    y -= speed;
+                }
+
+                
             //     if (x + speedX <= radius) {
-            //         // Достигли левой стенки, отскакиваем право
             //         speedX = -speedX;
             //         x = radius;
             //     } else if (x + speedX >= field.getWidth() - radius) {
-            //         // Достигли правой стенки, отскок влево
             //         speedX = -speedX;
             //         x = Double.valueOf(field.getWidth()-radius).intValue();
             //     } else if (y + speedY <= radius) {
-            //         // Достигли верхней стенки
             //         speedY = -speedY;
             //         y = radius;
             //     } else if (y + speedY >= field.getHeight() - radius) {
-            //         // Достигли нижней стенки
             //         speedY = -speedY;
             //         y = Double.valueOf(field.getHeight()-radius).intValue();
             //     } else {
-            //         // Просто смещаемся
             //         x += speedX;
             //         y += speedY;
             //     }
-            //     // Засыпаем на X миллисекунд, где X определяется 
-            //     // исходя из скорости
-            //     // Скорость = 1 (медленно), засыпаем на 15 мс.
-            //     // Скорость = 15 (быстро), засыпаем на 1 мс.
-                Thread.sleep(16000);
-            // }
+                Thread.sleep(15);
+            }
         } catch (InterruptedException ex) {
-            // Если нас прервали, то ничего не делаем 
-            // и просто выходим (завершаемся)
+
         }
     }
 
@@ -112,6 +116,31 @@ public class Racket implements Runnable {
 
     public double getY(){
         return y;
+    }
+
+    public int getKeyCodeUp(){
+        return keyCodeUp;
+    }
+
+    public int getKeyCodeDown(){
+        return keyCodeDown;
+    }
+
+    public synchronized void moveUp(KeyEvent e){
+        if(e.getID() == KeyEvent.KEY_PRESSED){
+            moovingUp = true;
+        }else if(e.getID() == KeyEvent.KEY_RELEASED){
+            moovingUp = false;
+        }
+    }
+
+    public synchronized void moveDown(KeyEvent e){
+        if(e.getID() == KeyEvent.KEY_PRESSED){
+            moovingDown = true;
+        }else if(e.getID() == KeyEvent.KEY_RELEASED){
+            moovingDown = false;
+        }
+
     }
 }
 

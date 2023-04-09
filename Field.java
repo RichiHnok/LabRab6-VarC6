@@ -6,11 +6,16 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import java.awt.event.KeyEvent;
 public class Field extends JPanel {
     private boolean paused;
 
     private Racket racket1;
+    // private int keyCodeUp1;
+    // private int keyCodeDown1;
     private Racket racket2;
+    // private int keyCodeUp2;
+    // private int keyCodeDown2;
 
     private ArrayList<BouncingBall> balls = new ArrayList<BouncingBall>(10);
     private Timer repaintTimer = new Timer(10, new ActionListener() {
@@ -33,14 +38,42 @@ public class Field extends JPanel {
         if(racket1 != null){
             racket1.paint(canvas);
         }
+
+        if(racket2 != null){
+            racket2.paint(canvas);
+        }
     }
+
     public void addBall() {
+        System.out.println(this.getSize().getWidth());
+        System.out.println(this.getHeight());
         balls.add(new BouncingBall(this));
     }
     
     public void addRacket(){
-        racket1 = new Racket(this, 0, 0, 38, 40);
-        racket1 = new Racket(this, 0, 0, 87, 83);
+        racket1 = new Racket(this, this.getSize().getWidth()/15, this.getSize().getHeight()/2, 83, 87);
+        // keyCodeUp1 = racket1.getKeyCodeUp();
+        // keyCodeDown1 = racket1.getKeyCodeDown();
+        System.out.println(this.getSize().getWidth());
+        System.out.println(this.getHeight());
+        racket2 = new Racket(this, this.getSize().getWidth()/15*14, this.getSize().getHeight()/2, 40, 38);
+        // keyCodeUp2 = racket2.getKeyCodeUp();
+        // keyCodeDown2 = racket2.getKeyCodeDown();
+
+    }
+
+    public void takeKeyEvent(KeyEvent e){
+        int keyCode = e.getKeyCode();
+        System.out.println(keyCode);
+        if(keyCode == racket1.getKeyCodeUp()){
+            racket1.moveUp(e);
+        }else if(keyCode == racket1.getKeyCodeDown()){
+            racket1.moveDown(e);
+        }else if(keyCode == racket2.getKeyCodeUp()){
+            racket2.moveUp(e);
+        }else if(keyCode == racket2.getKeyCodeDown()){
+            racket2.moveDown(e);
+        }
     }
     
     public synchronized void pause() {

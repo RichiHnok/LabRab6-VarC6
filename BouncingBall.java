@@ -91,8 +91,8 @@ public class BouncingBall implements Runnable {
                 Thread.sleep(16-speed);
             }
         } catch (InterruptedException ex) {
-        // Если нас прервали, то ничего не делаем 
-        // и просто выходим (завершаемся)
+            // Если нас прервали, то ничего не делаем 
+            // и просто выходим (завершаемся)
         }
     }
 
