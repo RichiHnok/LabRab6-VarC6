@@ -1,6 +1,9 @@
 import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -9,6 +12,13 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 public class MainFrame extends JFrame{
+    // Главный метод приложения
+    public static void main(String[] args) {
+        // Создать и сделать видимым главное окно приложения
+        MainFrame frame = new MainFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
     // Константы, задающие размер окна приложения, если оно 
     // не распахнуто на весь экран
     private static final int WIDTH = 700;
@@ -20,7 +30,15 @@ public class MainFrame extends JFrame{
     // Конструктор главного окна приложения
     public MainFrame() {
         super("Программирование и синхронизация потоков");
+
+        this.addKeyListener(new KeyAdapter(){
+            public void keyPressed(KeyEvent e){
+                
+            }
+        });
+
         setSize(WIDTH, HEIGHT);
+        
         Toolkit kit = Toolkit.getDefaultToolkit();
         // Отцентрировать окно приложения на экране
         setLocation((kit.getScreenSize().width - WIDTH)/2, 
@@ -30,6 +48,7 @@ public class MainFrame extends JFrame{
         // Создать меню
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
+
         JMenu ballMenu = new JMenu("Мячи");
         Action addBallAction = new AbstractAction("Добавить мяч") {
             public void actionPerformed(ActionEvent event) {
@@ -43,6 +62,22 @@ public class MainFrame extends JFrame{
         };
         menuBar.add(ballMenu);
         ballMenu.add(addBallAction);
+
+        JMenu racketMenu = new JMenu("Ракетка");
+        Action addRacketAction = new AbstractAction("Добавить ракетку"){
+            public void actionPerformed(ActionEvent event){
+                field.addRacket();
+            }
+        };
+        menuBar.add(racketMenu);
+        racketMenu.add(addRacketAction);
+        setFocusable(true);
+        getContentPane().addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                System.out.println(e.getKeyCode());    
+            }
+        });
+        
         JMenu controlMenu = new JMenu("Управление");
         menuBar.add(controlMenu);
         Action pauseAction = new AbstractAction("Приостановить движение"){
@@ -66,11 +101,5 @@ public class MainFrame extends JFrame{
         // Добавить в центр граничной компоновки поле Field
         getContentPane().add(field, BorderLayout.CENTER);
     }
-    // Главный метод приложения
-    public static void main(String[] args) {
-        // Создать и сделать видимым главное окно приложения
-        MainFrame frame = new MainFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-    }
+    
 }
