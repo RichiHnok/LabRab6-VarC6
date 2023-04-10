@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import java.awt.event.KeyEvent;
-import javax.swing.JFrame;
 
 public class Field extends JPanel {
     public boolean paused;

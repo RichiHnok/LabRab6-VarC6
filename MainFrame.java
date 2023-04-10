@@ -13,6 +13,8 @@ import javax.swing.JMenuItem;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import java.awt.Font;
+import javax.swing.JDialog;
+
 
 public class MainFrame extends JFrame{
     // Главный метод приложения
@@ -22,6 +24,8 @@ public class MainFrame extends JFrame{
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
+
+    public boolean isGameOver;
 
     public JLabel getP1Counter(){
         return p1Counter;
@@ -53,6 +57,32 @@ public class MainFrame extends JFrame{
         resumeMenuItem.setEnabled(true);
     }
 
+    public void congrats(int player){
+        JDialog congratsWindow = new JDialog(this, "Поздравление");
+        Toolkit kit = Toolkit.getDefaultToolkit();
+        congratsWindow.setLocation((kit.getScreenSize().width - 300)/2, (kit.getScreenSize().height - 120)/2);
+
+        JLabel info = new JLabel("Поздравляем игрока " + player + " с победой!");
+
+        Box box = Box.createHorizontalBox();
+        box.add(Box.createHorizontalGlue());
+        box.add(info);
+        box.add(Box.createHorizontalGlue());
+
+        reload();
+
+        congratsWindow.setSize(300, 120);
+        congratsWindow.add(box);
+        congratsWindow.setVisible(true);
+
+        if(!pauseMenuItem.isEnabled() && !resumeMenuItem.isEnabled()){
+            pauseMenuItem.setEnabled(true);
+        }
+        field.pause();
+        pauseMenuItem.setEnabled(false);
+        resumeMenuItem.setEnabled(true);
+    }
+
     // Конструктор главного окна приложения
     public MainFrame() {
         super("Программирование и синхронизация потоков");
@@ -63,14 +93,18 @@ public class MainFrame extends JFrame{
             }
 
             public void keyReleased(KeyEvent e){
-                if(!field.paused && e.getKeyCode() == 32){
+                if(!field.paused && e.getKeyCode() == 32 && !isGameOver){
                     field.pause();
                     pauseMenuItem.setEnabled(false);
                     resumeMenuItem.setEnabled(true);
-                }else if(field.paused && e.getKeyCode() == 32){
+                }else if(field.paused && e.getKeyCode() == 32 && !isGameOver){
                     field.resume();
                     pauseMenuItem.setEnabled(true);
                     resumeMenuItem.setEnabled(false);    
+                }else if(isGameOver && e.getKeyCode() == 32){
+                    field.P1points = 0;
+                    field.P2points = 0;
+                    reload();
                 }else{
                     field.takeKeyEvent(e);
                 }
@@ -81,12 +115,7 @@ public class MainFrame extends JFrame{
 
         Toolkit kit = Toolkit.getDefaultToolkit();
 
-        // field.addRacket();
-
-
-        // Отцентрировать окно приложения на экране
-        setLocation((kit.getScreenSize().width - WIDTH)/2, 
-        (kit.getScreenSize().height - HEIGHT)/2);
+        setLocation((kit.getScreenSize().width - WIDTH)/2, (kit.getScreenSize().height - HEIGHT)/2);
         // Установить начальное состояние окна развѐрнутым на весь экран
         setExtendedState(MAXIMIZED_BOTH);
         // Создать меню
@@ -112,6 +141,7 @@ public class MainFrame extends JFrame{
         JMenu racketMenu = new JMenu("Игра");
         Action addRacketAction = new AbstractAction("Запустить игру"){
             public void actionPerformed(ActionEvent event){
+                isGameOver = false;
                 field.addRacket();
                 // field.gameIsOn = true;
                 field.addBall();

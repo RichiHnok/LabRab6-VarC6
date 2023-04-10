@@ -110,16 +110,24 @@ public class BouncingBall implements Runnable {
                     speedX *= 1.0;
 
                     field.P2points++;
-                    field.getFrame().reload();
-                    field.getFrame().getP2Counter().setText(Integer.toString(field.P2points));
+                    if(field.P2points == 3){
+                        field.getFrame().congrats(2);
+                    }else{
+                        field.getFrame().reload();
+                        field.getFrame().getP2Counter().setText(Integer.toString(field.P2points));
+                    }
                 } else if (x + speedX >= field.getWidth() - radius) {
                     // Достигли правой стенки, отскок влево
                     speedX = -speedX;
                     x = Double.valueOf(field.getWidth()-radius).intValue();
                     speedX *= 1.0; 
                     field.P1points++;
-                    field.getFrame().reload();
-                    field.getFrame().getP1Counter().setText(Integer.toString(field.P1points));
+                    if(field.P1points == 3){
+                        field.getFrame().congrats(1);
+                    }else{
+                        field.getFrame().reload();
+                        field.getFrame().getP1Counter().setText(Integer.toString(field.P1points));
+                    }
                 } else if (y + speedY <= radius) {
                     // Достигли верхней стенки
                     speedY = -speedY;
@@ -172,6 +180,5 @@ public class BouncingBall implements Runnable {
         Ellipse2D.Double dot2 = new Ellipse2D.Double(x+radius, y+radius, 1, 1);
         canvas.draw(dot2);
         canvas.fill(dot2);
-
     }
 }
