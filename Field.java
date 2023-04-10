@@ -16,8 +16,10 @@ public class Field extends JPanel {
     private Racket racket2;
     // private int keyCodeUp2;
     // private int keyCodeDown2;
+    public boolean gameIsOn = false;
 
-    private ArrayList<BouncingBall> balls = new ArrayList<BouncingBall>(10);
+    public BouncingBall ball;
+    // private ArrayList<BouncingBall> balls = new ArrayList<BouncingBall>(10);
     private Timer repaintTimer = new Timer(10, new ActionListener() {
         public void actionPerformed(ActionEvent ev) {
             repaint();
@@ -32,7 +34,10 @@ public class Field extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D canvas = (Graphics2D) g;
-        for (BouncingBall ball: balls) {
+        // for (BouncingBall ball: balls) {
+        //     ball.paint(canvas);
+        // }
+        if(ball != null){
             ball.paint(canvas);
         }
         if(racket1 != null){
@@ -47,15 +52,16 @@ public class Field extends JPanel {
     public void addBall() {
         System.out.println(this.getSize().getWidth());
         System.out.println(this.getHeight());
-        balls.add(new BouncingBall(this));
+        // balls.add(new BouncingBall(this));
+        ball = new BouncingBall(this);
     }
     
     public void addRacket(){
         racket1 = new Racket(this, this.getSize().getWidth()/15, this.getSize().getHeight()/2, 83, 87);
         // keyCodeUp1 = racket1.getKeyCodeUp();
         // keyCodeDown1 = racket1.getKeyCodeDown();
-        System.out.println(this.getSize().getWidth());
-        System.out.println(this.getHeight());
+        // System.out.println(this.getSize().getWidth());
+        // System.out.println(this.getHeight());
         racket2 = new Racket(this, this.getSize().getWidth()/15*14, this.getSize().getHeight()/2, 40, 38);
         // keyCodeUp2 = racket2.getKeyCodeUp();
         // keyCodeDown2 = racket2.getKeyCodeDown();
@@ -93,5 +99,13 @@ public class Field extends JPanel {
         if(paused){
             wait();
         }
+    }
+    
+    public Racket getRacket1(){
+        return racket1;
+    }
+
+    public Racket getRacket2(){
+        return racket2;
     }
 }

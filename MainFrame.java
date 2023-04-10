@@ -74,16 +74,18 @@ public class MainFrame extends JFrame{
         ballMenu.add(addBallAction);
         
         
-        JMenu racketMenu = new JMenu("Ракетка");
-        Action addRacketAction = new AbstractAction("Добавить ракетку"){
+        JMenu racketMenu = new JMenu("Игра");
+        Action addRacketAction = new AbstractAction("Запустить игру"){
             public void actionPerformed(ActionEvent event){
                 field.addRacket();
+                // field.gameIsOn = true;
+
             }
         };
         menuBar.add(racketMenu);
         racketMenu.add(addRacketAction);
         
-        
+
         JMenu controlMenu = new JMenu("Управление");
         menuBar.add(controlMenu);
         Action pauseAction = new AbstractAction("Приостановить движение"){

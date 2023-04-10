@@ -1,6 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
-// import java.awt.geom.Ellipse2D;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -18,8 +18,8 @@ public class Racket implements Runnable {
     // private static final int MAX_SPEED = 15;
     private Field field;
     // private int radius;
-    private int height;
-    private int width;
+    public double height;
+    public double width;
     private Color color;
 
     private boolean moovingUp;
@@ -46,6 +46,9 @@ public class Racket implements Runnable {
         this.x = x+width;
         // System.out.println(field.getSize().getHeight());
         this.y = y+height;
+
+
+
         Thread thisThread = new Thread(this);
         thisThread.start();
     }
@@ -68,25 +71,7 @@ public class Racket implements Runnable {
                 }else if(moovingDown){
                     y -= speed;
                 }
-
-                
-            //     if (x + speedX <= radius) {
-            //         speedX = -speedX;
-            //         x = radius;
-            //     } else if (x + speedX >= field.getWidth() - radius) {
-            //         speedX = -speedX;
-            //         x = Double.valueOf(field.getWidth()-radius).intValue();
-            //     } else if (y + speedY <= radius) {
-            //         speedY = -speedY;
-            //         y = radius;
-            //     } else if (y + speedY >= field.getHeight() - radius) {
-            //         speedY = -speedY;
-            //         y = Double.valueOf(field.getHeight()-radius).intValue();
-            //     } else {
-            //         x += speedX;
-            //         y += speedY;
-            //     }
-                Thread.sleep(15);
+                Thread.sleep(10);
             }
         } catch (InterruptedException ex) {
 
@@ -100,21 +85,26 @@ public class Racket implements Runnable {
         Rectangle2D.Double ball = new Rectangle2D.Double(x - width, y - height, width, height);
         canvas.draw(ball);
         canvas.fill(ball);
+        canvas.setColor(Color.BLACK);
+        canvas.setPaint(Color.BLACK);
+        Ellipse2D.Double dot = new Ellipse2D.Double(x, y, 1, 1);
+        canvas.draw(dot);
+        canvas.fill(dot);
     }
 
-    public void setX(double x){
+    public synchronized void setX(double x){
         this.x = x; 
     }
 
-    public double getX(){
+    public synchronized double getX(){
         return x;
     }
 
-    public void setY(double y){
+    public synchronized void setY(double y){
         this.y = y;
     }
 
-    public double getY(){
+    public synchronized double getY(){
         return y;
     }
 
@@ -140,8 +130,8 @@ public class Racket implements Runnable {
         }else if(e.getID() == KeyEvent.KEY_RELEASED){
             moovingDown = false;
         }
-
     }
+
 }
 
 
