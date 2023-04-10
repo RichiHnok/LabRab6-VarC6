@@ -3,12 +3,16 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+// import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import java.awt.event.KeyEvent;
+import javax.swing.JFrame;
+
 public class Field extends JPanel {
-    private boolean paused;
+    public boolean paused;
+
+    private MainFrame frame;
 
     private Racket racket1;
     // private int keyCodeUp1;
@@ -16,18 +20,21 @@ public class Field extends JPanel {
     private Racket racket2;
     // private int keyCodeUp2;
     // private int keyCodeDown2;
-    public boolean gameIsOn = false;
+
+    public int P1points = 0;
+    public int P2points = 0;
 
     public BouncingBall ball;
     // private ArrayList<BouncingBall> balls = new ArrayList<BouncingBall>(10);
+
     private Timer repaintTimer = new Timer(10, new ActionListener() {
         public void actionPerformed(ActionEvent ev) {
             repaint();
         }
     });
 
-    public Field() {
-
+    public Field(MainFrame frame) {
+        this.frame = frame;
         setBackground(Color.WHITE);
         repaintTimer.start();
     }
@@ -68,7 +75,7 @@ public class Field extends JPanel {
 
     }
 
-    public void takeKeyEvent(KeyEvent e){
+    public void takeKeyEvent(KeyEvent e) {
         int keyCode = e.getKeyCode();
         System.out.println(keyCode);
         if(keyCode == racket1.getKeyCodeUp()){
@@ -81,6 +88,15 @@ public class Field extends JPanel {
             racket2.moveDown(e);
         }
     }
+
+    // public void takeKeyReleasedEvent(KeyEvent e){
+    //     int keyCode = e.getKeyCode();
+    //     if(keyCode == 32){
+    //         if(!paused){
+    //             pause
+    //         }
+    //     }
+    // }
     
     public synchronized void pause() {
         paused = true;
@@ -107,5 +123,9 @@ public class Field extends JPanel {
 
     public Racket getRacket2(){
         return racket2;
+    }
+
+    public MainFrame getFrame(){
+        return frame;
     }
 }

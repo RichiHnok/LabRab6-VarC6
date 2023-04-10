@@ -1,7 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyListener;
+// import java.awt.event.KeyListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
@@ -10,6 +10,9 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.Box;
+import javax.swing.JLabel;
+import java.awt.Font;
 
 public class MainFrame extends JFrame{
     // Главный метод приложения
@@ -19,14 +22,37 @@ public class MainFrame extends JFrame{
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
+
+    public JLabel getP1Counter(){
+        return p1Counter;
+    }
+    public JLabel getP2Counter(){
+        return p2Counter;
+    }
     // Константы, задающие размер окна приложения, если оно 
     // не распахнуто на весь экран
     private static final int WIDTH = 700;
     private static final int HEIGHT = 500;
     private JMenuItem pauseMenuItem;
     private JMenuItem resumeMenuItem;
+
+    public JLabel p1Counter;
+    public JLabel p2Counter;
     // Поле, по которому прыгают мячи
-    private Field field = new Field();
+    private Field field = new Field(this);
+
+    public void reload(){
+        field.getRacket1().setYDefault();
+        field.getRacket2().setYDefault();
+        field.ball.reload();
+        if(!pauseMenuItem.isEnabled() && !resumeMenuItem.isEnabled()){
+            pauseMenuItem.setEnabled(true);
+        }
+        field.pause();
+        pauseMenuItem.setEnabled(false);
+        resumeMenuItem.setEnabled(true);
+    }
+
     // Конструктор главного окна приложения
     public MainFrame() {
         super("Программирование и синхронизация потоков");
@@ -37,13 +63,22 @@ public class MainFrame extends JFrame{
             }
 
             public void keyReleased(KeyEvent e){
-                field.takeKeyEvent(e);
+                if(!field.paused && e.getKeyCode() == 32){
+                    field.pause();
+                    pauseMenuItem.setEnabled(false);
+                    resumeMenuItem.setEnabled(true);
+                }else if(field.paused && e.getKeyCode() == 32){
+                    field.resume();
+                    pauseMenuItem.setEnabled(true);
+                    resumeMenuItem.setEnabled(false);    
+                }else{
+                    field.takeKeyEvent(e);
+                }
             }
         });
 
         setSize(WIDTH, HEIGHT);
-        
-        
+
         Toolkit kit = Toolkit.getDefaultToolkit();
 
         // field.addRacket();
@@ -79,7 +114,13 @@ public class MainFrame extends JFrame{
             public void actionPerformed(ActionEvent event){
                 field.addRacket();
                 // field.gameIsOn = true;
-
+                field.addBall();
+                if(!pauseMenuItem.isEnabled() && !resumeMenuItem.isEnabled()){
+                    pauseMenuItem.setEnabled(true);
+                }
+                field.pause();
+                pauseMenuItem.setEnabled(false);
+                resumeMenuItem.setEnabled(true);
             }
         };
         menuBar.add(racketMenu);
@@ -106,7 +147,40 @@ public class MainFrame extends JFrame{
         };
         resumeMenuItem = controlMenu.add(resumeAction);
         resumeMenuItem.setEnabled(false);
+
+
+        Box boxTop = Box.createHorizontalBox();
+
+        JLabel p1Sign = new JLabel("Игрок 1:");
+        p1Sign.setFont(new Font("Verdana", Font.PLAIN, 20));
+        // p1Sign.setPreferredSize(new Dimension(100, 10));
+        p1Counter = new JLabel("0");
+        p1Counter.setFont(new Font("Verdana", Font.PLAIN, 20));
+        // p1Counter.setPreferredSize(new Dimension(100, 10));
+        
+        JLabel p2Sign = new JLabel("Игрок 2:");
+        p2Sign.setFont(new Font("Verdana", Font.PLAIN, 20));
+        // p2Sign.setPreferredSize(new Dimension(100, 10));
+        p2Counter = new JLabel("0");
+        p2Counter.setFont(new Font("Verdana", Font.PLAIN, 20));
+        // p2Counter.setPreferredSize(new Dimension(100, 10));
+
+
+        boxTop.add(Box.createHorizontalStrut(30));
+        boxTop.add(p1Sign);
+        boxTop.add(Box.createHorizontalStrut(10));
+        boxTop.add(p1Counter);
+
+        boxTop.add(Box.createHorizontalGlue());
+
+        boxTop.add(p2Sign);
+        boxTop.add(Box.createHorizontalStrut(10));
+        boxTop.add(p2Counter);
+        boxTop.add(Box.createHorizontalStrut(30));
+
+
         // Добавить в центр граничной компоновки поле Field
+        getContentPane().add(boxTop, BorderLayout.NORTH);
         getContentPane().add(field, BorderLayout.CENTER);
 
     }

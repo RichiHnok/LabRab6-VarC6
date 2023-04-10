@@ -3,10 +3,10 @@ import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.ActionListener;
+// import java.awt.event.KeyListener;
+// import java.awt.event.ActionListener;
 
-import java.awt.event.KeyAdapter;
+// import java.awt.event.KeyAdapter;
 // import java.awt.;
 
 public class Racket implements Runnable {
@@ -21,6 +21,8 @@ public class Racket implements Runnable {
     public double height;
     public double width;
     private Color color;
+
+    public double startPosition;
 
     private boolean moovingUp;
     private boolean moovingDown;
@@ -46,7 +48,7 @@ public class Racket implements Runnable {
         this.x = x+width;
         // System.out.println(field.getSize().getHeight());
         this.y = y+height;
-
+        startPosition = this.y;
 
 
         Thread thisThread = new Thread(this);
@@ -103,10 +105,15 @@ public class Racket implements Runnable {
     public synchronized void setY(double y){
         this.y = y;
     }
+    
+    public synchronized void setYDefault(){
+        y = startPosition;
+    }
 
     public synchronized double getY(){
         return y;
     }
+
 
     public int getKeyCodeUp(){
         return keyCodeUp;

@@ -4,9 +4,9 @@ import java.awt.geom.Ellipse2D;
 
 public class BouncingBall implements Runnable {
     // Максимальный радиус, который может иметь мяч
-    private static final int MAX_RADIUS = 10;
+    private static final int MAX_RADIUS = 15;
     // Минимальный радиус, который может иметь мяч
-    private static final int MIN_RADIUS = 5;
+    private static final int MIN_RADIUS = 10;
     // Максимальная скорость, с которой может летать мяч
     private static final int MAX_SPEED = 8;
     private Field field;
@@ -55,7 +55,7 @@ public class BouncingBall implements Runnable {
         // Цвет мяча выбирается случайно
         color = new Color((float)Math.random(), (float)Math.random(), (float)Math.random());
         // Начальное положение мяча случайно
-        x = Math.random()*(field.getSize().getWidth()-2*radius) + radius;
+        x = field.getSize().getWidth()/2;
         y = Math.random()*(field.getSize().getHeight()-2*radius) + radius;
         // Создаѐм новый экземпляр потока, передавая аргументом 
         // ссылку на класс, реализующий Runnable (т.е. на себя)
@@ -107,12 +107,19 @@ public class BouncingBall implements Runnable {
                     // Достигли левой стенки, отскакиваем право
                     speedX = -speedX;
                     x = radius;
-                    speedX *= 1.0; 
+                    speedX *= 1.0;
+
+                    field.P2points++;
+                    field.getFrame().reload();
+                    field.getFrame().getP2Counter().setText(Integer.toString(field.P2points));
                 } else if (x + speedX >= field.getWidth() - radius) {
                     // Достигли правой стенки, отскок влево
                     speedX = -speedX;
                     x = Double.valueOf(field.getWidth()-radius).intValue();
                     speedX *= 1.0; 
+                    field.P1points++;
+                    field.getFrame().reload();
+                    field.getFrame().getP1Counter().setText(Integer.toString(field.P1points));
                 } else if (y + speedY <= radius) {
                     // Достигли верхней стенки
                     speedY = -speedY;
@@ -129,29 +136,23 @@ public class BouncingBall implements Runnable {
                     y += speedY;
                 }
 
-                // if(x - radius >= field.getRacket1().getX() &&
-                //     x - radius <= field.getRacket1().getX() + field.getRacket1().width
-                // ){
-                //     speedX = -speedX;
-                //     x = radius;
-                //     speedX *= 1.05; 
-                // }
-
-                // if(x + 2*radius >= field.getRacket2().getX() && y + radius >= field.getRacket2().up && y + radius <= field.getRacket2().down){
-                //     speedX = -speedX;
-                //     x = Double.valueOf(field.getWidth()-radius).intValue();
-                //     speedX *= 1.05; 
-                // }
-                // Засыпаем на X миллисекунд, где X определяется 
-                // исходя из скорости
-                // Скорость = 1 (медленно), засыпаем на 15 мс.
-                // Скорость = 15 (быстро), засыпаем на 1 мс.
                 Thread.sleep(5);
             }
         } catch (InterruptedException ex) {
             // Если нас прервали, то ничего не делаем 
             // и просто выходим (завершаемся)
         }
+    }
+
+    public void reload(){
+        double angle = 0;
+        do{
+            angle = Math.random()*2*Math.PI;
+        }while(angle >= 0.7854 && angle <= 2.356 || angle >= 3.927 && angle <=5.498);
+        speedX = 3*Math.cos(angle);
+        speedY = 3*Math.sin(angle);
+        x = field.getSize().getWidth()/2;
+        y = Math.random()*(field.getSize().getHeight()-2*radius) + radius;
     }
 
     // Метод прорисовки самого себя
