@@ -3,7 +3,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-// import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import java.awt.event.KeyEvent;
@@ -11,21 +10,18 @@ import java.awt.event.KeyEvent;
 public class Field extends JPanel {
     public boolean paused;
 
+    //@ ссылка на главное окно
     private MainFrame frame;
-    public int maxCount = 3;
-
-    private Racket racket1;
-    // private int keyCodeUp1;
-    // private int keyCodeDown1;
-    private Racket racket2;
-    // private int keyCodeUp2;
-    // private int keyCodeDown2;
+    //@ до скольки очков игра продолжается
+    public int maxPoints = 3;
 
     public int P1points = 0;
     public int P2points = 0;
 
+    private Racket racket1;
+    private Racket racket2;
+
     public BouncingBall ball;
-    // private ArrayList<BouncingBall> balls = new ArrayList<BouncingBall>(10);
 
     private Timer repaintTimer = new Timer(10, new ActionListener() {
         public void actionPerformed(ActionEvent ev) {
@@ -38,43 +34,32 @@ public class Field extends JPanel {
         setBackground(Color.WHITE);
         repaintTimer.start();
     }
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D canvas = (Graphics2D) g;
-        // for (BouncingBall ball: balls) {
-        //     ball.paint(canvas);
-        // }
         if(ball != null){
             ball.paint(canvas);
         }
         if(racket1 != null){
             racket1.paint(canvas);
         }
-
         if(racket2 != null){
             racket2.paint(canvas);
         }
     }
 
     public void addBall() {
-        System.out.println(this.getSize().getWidth());
-        System.out.println(this.getHeight());
-        // balls.add(new BouncingBall(this));
         ball = new BouncingBall(this);
     }
     
     public void addRacket(){
+        //& коды клавиш: 83 - w; 87 - s; 40 - ArrowUp; 38 - ArrowDown
         racket1 = new Racket(this, this.getSize().getWidth()/15, this.getSize().getHeight()/2, 83, 87);
-        // keyCodeUp1 = racket1.getKeyCodeUp();
-        // keyCodeDown1 = racket1.getKeyCodeDown();
-        // System.out.println(this.getSize().getWidth());
-        // System.out.println(this.getHeight());
         racket2 = new Racket(this, this.getSize().getWidth()/15*14, this.getSize().getHeight()/2, 40, 38);
-        // keyCodeUp2 = racket2.getKeyCodeUp();
-        // keyCodeDown2 = racket2.getKeyCodeDown();
-
     }
 
+    //@ обработчик клавиш, переданных главным окном
     public void takeKeyEvent(KeyEvent e) {
         int keyCode = e.getKeyCode();
         System.out.println(keyCode);
@@ -88,15 +73,6 @@ public class Field extends JPanel {
             racket2.moveDown(e);
         }
     }
-
-    // public void takeKeyReleasedEvent(KeyEvent e){
-    //     int keyCode = e.getKeyCode();
-    //     if(keyCode == 32){
-    //         if(!paused){
-    //             pause
-    //         }
-    //     }
-    // }
     
     public synchronized void pause() {
         paused = true;
@@ -105,16 +81,13 @@ public class Field extends JPanel {
         paused = false;
         notifyAll();
     }
+
     public synchronized void canMove(BouncingBall ball) throws InterruptedException {
-        if (paused) {
-            wait();
-        }
+        if(paused) wait();
     }
 
     public synchronized void canMove(Racket racket) throws InterruptedException {
-        if(paused){
-            wait();
-        }
+        if(paused) wait();
     }
     
     public Racket getRacket1(){

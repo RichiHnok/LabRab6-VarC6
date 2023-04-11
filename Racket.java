@@ -3,21 +3,10 @@ import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.event.KeyEvent;
-// import java.awt.event.KeyListener;
-// import java.awt.event.ActionListener;
-
-// import java.awt.event.KeyAdapter;
-// import java.awt.;
 
 public class Racket implements Runnable {
-    // Максимальный радиус, который может иметь мяч
-    // private static final int MAX_RADIUS = 40;
-    // Минимальный радиус, который может иметь мяч
-    // private static final int MIN_RADIUS = 3;
-    // Максимальная скорость, с которой может летать мяч
-    // private static final int MAX_SPEED = 15;
+   
     private Field field;
-    // private int radius;
     public double height;
     public double width;
     private Color color;
@@ -26,7 +15,7 @@ public class Racket implements Runnable {
 
     private boolean moovingUp;
     private boolean moovingDown;
-    // Текущие координаты мяча
+
     private double x;
     private double y;
 
@@ -45,18 +34,14 @@ public class Racket implements Runnable {
         width = 10;
 
         color = new Color((float)Math.random(), (float)Math.random(), (float)Math.random());
-        this.x = x+width;
-        // System.out.println(field.getSize().getHeight());
-        this.y = y+height;
+        this.x = x + width;
+        this.y = y + height;
         startPosition = this.y;
-
 
         Thread thisThread = new Thread(this);
         thisThread.start();
     }
 
-    // Метод run() исполняется внутри потока. Когда он завершает работу,
-    // то завершается и поток
     public void run() {
         try {
             while(true) {
@@ -84,9 +69,10 @@ public class Racket implements Runnable {
     public void paint(Graphics2D canvas) {
         canvas.setColor(color);
         canvas.setPaint(color);
-        Rectangle2D.Double ball = new Rectangle2D.Double(x - width, y - height, width, height);
-        canvas.draw(ball);
-        canvas.fill(ball);
+        Rectangle2D.Double racket = new Rectangle2D.Double(x - width, y - height, width, height);
+        canvas.draw(racket);
+        canvas.fill(racket);
+
         canvas.setColor(Color.BLACK);
         canvas.setPaint(Color.BLACK);
         Ellipse2D.Double dot = new Ellipse2D.Double(x, y, 1, 1);
@@ -94,16 +80,8 @@ public class Racket implements Runnable {
         canvas.fill(dot);
     }
 
-    public synchronized void setX(double x){
-        this.x = x; 
-    }
-
     public synchronized double getX(){
         return x;
-    }
-
-    public synchronized void setY(double y){
-        this.y = y;
     }
     
     public synchronized void setYDefault(){
@@ -138,7 +116,6 @@ public class Racket implements Runnable {
             moovingDown = false;
         }
     }
-
 }
 
 

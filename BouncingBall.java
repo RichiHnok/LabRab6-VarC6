@@ -9,6 +9,7 @@ public class BouncingBall implements Runnable {
     private static final int MIN_RADIUS = 10;
     // Максимальная скорость, с которой может летать мяч
     private static final int MAX_SPEED = 14;
+
     private Field field;
     private int radius;
     private Color color;
@@ -17,16 +18,20 @@ public class BouncingBall implements Runnable {
     // Текущие координаты мяча
     private double x;
     private double y;
-    // Вертикальная и горизонтальная компонента скорости
+
     private double speed;
+    // Вертикальная и горизонтальная компонента скорости
     private double speedX;
     private double speedY;
+    private double acceleration = 1.1;
 
+    //@ область ракетки 1
     public double r1x;
     public double r1xw;
     public double r1y;
     public double r1yh;
 
+    //@ область ракетки 2
     public double r2x;
     public double r2xw;
     public double r2y;
@@ -46,7 +51,7 @@ public class BouncingBall implements Runnable {
             speed = MAX_SPEED;
         }
         // Начальное направление скорости тоже случайно, 
-        // угол в пределах от 0 до 2PI
+        // угол в пределах [-pi4; pi/4]+[pi3/4; pi5/4]
         double angle = 0;
         do{
             angle = Math.random()*2*Math.PI;
@@ -82,53 +87,53 @@ public class BouncingBall implements Runnable {
                 r2xw = r2x - field.getRacket2().width;
                 r2y = field.getRacket2().getY();
                 r2yh = r2y - field.getRacket2().height;
-                // Синхронизация потоков на самом объекте поля
-                // Если движение разрешено - управление будет 
-                // возвращено в метод
-                // В противном случае - активный поток заснѐт
+
                 field.canMove(this);
                 if (
                     x + speedX >= r1xw && x + speedX <= r1x
                     &&
                     y + speedY >= r1yh && y + speedY <= r1y
                 ){
+                    //@ отскок от ракетки 1
                     speedX = -speedX;
                     x = r1x - 1;
-                    speedX *= 1.1;                         
+                    speedX *= acceleration;                         
                 
                 }else if (
                     x + speedX >= r2xw && x + speedX <= r2x
                     &&
                     y + speedY >= r2yh && y + speedY <= r2y
                 ){
+                    //@ отскок от ракетки 2
                     speedX = -speedX;
                     x = r2xw;
-                    speedX *= 1.1;                         
+                    speedX *= acceleration;                         
                 
                 }else if (x + speedX <= radius) {
-                    // Достигли левой стенки, отскакиваем право
+                    //@ достигли левой стенки
                     speedX = -speedX;
                     x = radius;
-                    speedX *= 1.0;
 
                     field.P2points++;
-                    field.getFrame().getP2Counter().setText(field.P2points + "/" + field.maxCount);
-                    if(field.P2points == maxCount){
+
+                    field.getFrame().getP2Counter().setText(field.P2points + "/" + field.maxPoints);
+                    if(field.P2points == field.maxPoints){
                         field.getFrame().congrats(2);
-                        field.getFrame().getP1Counter().setText(field.P1points + "/" + field.maxCount);
+                        field.getFrame().getP1Counter().setText(field.P1points + "/" + field.maxPoints);
                     }else{
                         field.getFrame().reload();
                     }
                 } else if (x + speedX >= field.getWidth() - radius) {
-                    // Достигли правой стенки, отскок влево
+                    //@ достгли правой стенки
                     speedX = -speedX;
                     x = Double.valueOf(field.getWidth()-radius).intValue();
-                    speedX *= 1.0; 
+
                     field.P1points++;
-                    field.getFrame().getP1Counter().setText(field.P1points + "/" + field.maxCount);
-                    if(field.P1points == maxCount){
+
+                    field.getFrame().getP1Counter().setText(field.P1points + "/" + field.maxPoints);
+                    if(field.P1points == field.maxPoints){
                         field.getFrame().congrats(1);
-                        field.getFrame().getP2Counter().setText(field.P2points + "/" + field.maxCount);
+                        field.getFrame().getP2Counter().setText(field.P2points + "/" + field.maxPoints);
                     }else{
                         field.getFrame().reload();
                     }
@@ -151,11 +156,11 @@ public class BouncingBall implements Runnable {
                 Thread.sleep(5);
             }
         } catch (InterruptedException ex) {
-            // Если нас прервали, то ничего не делаем 
-            // и просто выходим (завершаемся)
+
         }
     }
 
+    //@ установка мяча в позицию по умолчанию
     public void reload(){
         double angle = 0;
         do{
@@ -174,11 +179,13 @@ public class BouncingBall implements Runnable {
         Ellipse2D.Double ball = new Ellipse2D.Double(x - radius, y - radius, 2 * radius, 2 * radius);
         canvas.draw(ball);
         canvas.fill(ball);
+
         canvas.setColor(Color.BLACK);
         canvas.setPaint(Color.BLACK);
         Ellipse2D.Double dot = new Ellipse2D.Double(x, y, 1, 1);
         canvas.draw(dot);
         canvas.fill(dot);
+
         canvas.setColor(Color.PINK);
         canvas.setPaint(Color.PINK);
         Ellipse2D.Double dot2 = new Ellipse2D.Double(x+radius, y+radius, 1, 1);
