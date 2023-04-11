@@ -12,6 +12,7 @@ public class Field extends JPanel {
     public boolean paused;
 
     private MainFrame frame;
+    public int maxCount = 3;
 
     private Racket racket1;
     // private int keyCodeUp1;

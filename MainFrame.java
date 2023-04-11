@@ -81,6 +81,7 @@ public class MainFrame extends JFrame{
         field.pause();
         pauseMenuItem.setEnabled(false);
         resumeMenuItem.setEnabled(true);
+        isGameOver = true;;
     }
 
     // Конструктор главного окна приложения
@@ -102,9 +103,12 @@ public class MainFrame extends JFrame{
                     pauseMenuItem.setEnabled(true);
                     resumeMenuItem.setEnabled(false);    
                 }else if(isGameOver && e.getKeyCode() == 32){
+                    isGameOver = false;
                     field.P1points = 0;
                     field.P2points = 0;
                     reload();
+                    p1Counter.setText("0/" + field.maxCount);
+                    p2Counter.setText("0/" + field.maxCount);
                 }else{
                     field.takeKeyEvent(e);
                 }
@@ -123,19 +127,19 @@ public class MainFrame extends JFrame{
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
         
-        JMenu ballMenu = new JMenu("Мячи");
-        Action addBallAction = new AbstractAction("Добавить мяч") {
-            public void actionPerformed(ActionEvent event) {
-                field.addBall();
-                if (!pauseMenuItem.isEnabled() && !resumeMenuItem.isEnabled()) {
-                    // Ни один из пунктов меню не являются 
-                    // доступными - сделать доступным "Паузу"
-                    pauseMenuItem.setEnabled(true);
-                }
-            }
-        };
-        menuBar.add(ballMenu);
-        ballMenu.add(addBallAction);
+        // JMenu ballMenu = new JMenu("Мячи");
+        // Action addBallAction = new AbstractAction("Добавить мяч") {
+        //     public void actionPerformed(ActionEvent event) {
+        //         field.addBall();
+        //         if (!pauseMenuItem.isEnabled() && !resumeMenuItem.isEnabled()) {
+        //             // Ни один из пунктов меню не являются 
+        //             // доступными - сделать доступным "Паузу"
+        //             pauseMenuItem.setEnabled(true);
+        //         }
+        //     }
+        // };
+        // menuBar.add(ballMenu);
+        // ballMenu.add(addBallAction);
         
         
         JMenu racketMenu = new JMenu("Игра");
@@ -184,14 +188,14 @@ public class MainFrame extends JFrame{
         JLabel p1Sign = new JLabel("Игрок 1:");
         p1Sign.setFont(new Font("Verdana", Font.PLAIN, 20));
         // p1Sign.setPreferredSize(new Dimension(100, 10));
-        p1Counter = new JLabel("0");
+        p1Counter = new JLabel("0/" + field.maxCount);
         p1Counter.setFont(new Font("Verdana", Font.PLAIN, 20));
         // p1Counter.setPreferredSize(new Dimension(100, 10));
         
         JLabel p2Sign = new JLabel("Игрок 2:");
         p2Sign.setFont(new Font("Verdana", Font.PLAIN, 20));
         // p2Sign.setPreferredSize(new Dimension(100, 10));
-        p2Counter = new JLabel("0");
+        p2Counter = new JLabel("0/" + field.maxCount);
         p2Counter.setFont(new Font("Verdana", Font.PLAIN, 20));
         // p2Counter.setPreferredSize(new Dimension(100, 10));
 

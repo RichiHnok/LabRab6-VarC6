@@ -8,10 +8,12 @@ public class BouncingBall implements Runnable {
     // Минимальный радиус, который может иметь мяч
     private static final int MIN_RADIUS = 10;
     // Максимальная скорость, с которой может летать мяч
-    private static final int MAX_SPEED = 8;
+    private static final int MAX_SPEED = 14;
     private Field field;
     private int radius;
     private Color color;
+
+    public int maxCount = 3;
     // Текущие координаты мяча
     private double x;
     private double y;
@@ -92,7 +94,7 @@ public class BouncingBall implements Runnable {
                 ){
                     speedX = -speedX;
                     x = r1x - 1;
-                    speedX *= 1.0;                         
+                    speedX *= 1.1;                         
                 
                 }else if (
                     x + speedX >= r2xw && x + speedX <= r2x
@@ -101,7 +103,7 @@ public class BouncingBall implements Runnable {
                 ){
                     speedX = -speedX;
                     x = r2xw;
-                    speedX *= 1.0;                         
+                    speedX *= 1.1;                         
                 
                 }else if (x + speedX <= radius) {
                     // Достигли левой стенки, отскакиваем право
@@ -110,11 +112,12 @@ public class BouncingBall implements Runnable {
                     speedX *= 1.0;
 
                     field.P2points++;
-                    if(field.P2points == 3){
+                    field.getFrame().getP2Counter().setText(field.P2points + "/" + field.maxCount);
+                    if(field.P2points == maxCount){
                         field.getFrame().congrats(2);
+                        field.getFrame().getP1Counter().setText(field.P1points + "/" + field.maxCount);
                     }else{
                         field.getFrame().reload();
-                        field.getFrame().getP2Counter().setText(Integer.toString(field.P2points));
                     }
                 } else if (x + speedX >= field.getWidth() - radius) {
                     // Достигли правой стенки, отскок влево
@@ -122,11 +125,12 @@ public class BouncingBall implements Runnable {
                     x = Double.valueOf(field.getWidth()-radius).intValue();
                     speedX *= 1.0; 
                     field.P1points++;
-                    if(field.P1points == 3){
+                    field.getFrame().getP1Counter().setText(field.P1points + "/" + field.maxCount);
+                    if(field.P1points == maxCount){
                         field.getFrame().congrats(1);
+                        field.getFrame().getP2Counter().setText(field.P2points + "/" + field.maxCount);
                     }else{
                         field.getFrame().reload();
-                        field.getFrame().getP1Counter().setText(Integer.toString(field.P1points));
                     }
                 } else if (y + speedY <= radius) {
                     // Достигли верхней стенки
